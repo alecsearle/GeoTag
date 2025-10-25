@@ -2,6 +2,10 @@
 
 Geo Tag is an application that mimics the activity of geocaching. Admins have the ability to create new Geo Tags that contain a name and a hint on how to find the tag. Users can view a full list of all Geo Tags along with their hints. The user may select a Geo Tag they would like to find, and upon successfully discovering the Geo Tag using the hint, they can scan the tag to verify they found the correct one!
 
+# How to Use App
+
+This app utilizes the NFC functionality of mobile phones. Because of this, it is required that it be ran under a development build. For me, I run the built application on XCode, and then pair that with the command "npx expo start --dev-client" in my terminal under my projects directory.
+
 # Wireframe
 
 ![Tool Tracking Screenshot](./assets/images/wireframe.jpeg)
