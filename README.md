@@ -1,50 +1,17 @@
-# Welcome to your Expo app 👋
+# Welcome to Geo Tag
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Geo Tag is an application that mimics the activity of geocaching. Admins have the ability to create new Geo Tags that contain a name and a hint on how to find the tag. Users can view a full list of all Geo Tags along with their hints. The user may select a Geo Tag they would like to find, and upon successfully discovering the Geo Tag using the hint, they can scan the tag to verify they found the correct one!
 
-## Get started
+# Wireframe
 
-1. Install dependencies
+![Tool Tracking Screenshot](./assets/images/wireframe.jpeg)
 
-   ```bash
-   npm install
-   ```
+# Human Interface Guidelines
 
-2. Start the app
+After reading about Human Interface Guidelines, I've seen how important they can be to the user experience. In this application I tried following a few HIG components from the Apple documentation.
 
-   ```bash
-   npx expo start
-   ```
+Buttons are important to the user experience. Apple recommends that developers use buttons that can 'associate familiar actions with familiar icons'. However, the actions required in my application are not completely intuitive. That is why I followed the direction of "using text/short labels to communicate more clearly than an icon". This app requires a few specific actions that are not immediately recognizable, which is why I used short text on my buttons.
 
-In the output, you'll find options to open the app in a
+With the multitude of information in this application, I sought to follow the 'Layout and Organization > Boxes' best practices. On pages where lots of content is shown (i.e. Geo Tag List, Search for Geo Tag), I split different components into their own boxes to help separate concerns.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Lastly, the best practice of using 'Search Fields' is utilized on my Geo Tag List page to, as Apple HIG recommends, start search immediately when a person types. Meaning it starts filtering the list of Geo Tags as the user types, without having to click a search button.

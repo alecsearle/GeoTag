@@ -5,6 +5,8 @@ import DeepLinkingScreen from "./Screens/DeepLinkingScreen.js";
 import HomeScreen from "./Screens/HomeScreen.js";
 import TagDetailScreen from "./Screens/TagDetailScreen.js";
 import WriteNdefScreen from "./Screens/WriteNdefScreen.js";
+import GeoTagListScreen from "./Screens/GeoTagListScreen.js";
+import GeoTagSearchScreen from "./Screens/GeoTagSearchScreen.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,6 +15,16 @@ function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Home" }} />
+        <Stack.Screen
+          name="GeoTagList"
+          component={GeoTagListScreen}
+          options={{ title: "Geo Tag List" }}
+        />
+        <Stack.Screen
+          name="GeoTagSearch"
+          component={GeoTagSearchScreen}
+          options={{ title: "Search for Geo Tag" }}
+        />
         <Stack.Screen name="Tag" component={TagDetailScreen} options={{ title: "Tag Detail" }} />
         <Stack.Screen
           name="WriteNdef"

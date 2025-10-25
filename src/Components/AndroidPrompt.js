@@ -57,7 +57,7 @@ function AndroidPrompt(props, ref) {
       <View style={styles.content}>
         <Animated.View style={[styles.backdrop, StyleSheet.absoluteFill, backdropAnimStyle]} />
         <Animated.View style={[styles.prompt, promptAnimStyle]}>
-          <Text style={styles.hint}>{hintText || "Ready to Scan Nfc"}</Text>
+          <Text style={styles.hint}>{hintText || "Detecting Geo Tag"}</Text>
 
           <Pressable
             style={styles.btn}

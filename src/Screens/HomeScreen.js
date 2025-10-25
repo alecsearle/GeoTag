@@ -1,14 +1,15 @@
 import React from "react";
-import { Linking, Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import NfcManager, { NfcTech } from "react-native-nfc-manager";
-import { Button } from "react-native-paper";
-import AndroidPrompt from "../Components/AndroidPrompt";
+import { Linking, StyleSheet, Text, View, ImageBackground } from "react-native";
+import NfcManager from "react-native-nfc-manager";
+import { Switch } from "react-native-paper";
+import { useAdmin } from "../context/AdminContext";
+import RenderNfcButtons from "../Components/RenderNfcButtons";
 
 function HomeScreen(props) {
   const { navigation } = props;
   const [hasNfc, setHasNfc] = React.useState(null);
   const [enabled, setEnabled] = React.useState(null);
-  const androidPromptRef = React.useRef();
+  const { isAdmin, toggleAdmin, loading: adminLoading } = useAdmin();
 
   React.useEffect(() => {
     async function checkNfc() {
@@ -42,93 +43,31 @@ function HomeScreen(props) {
 
   // THIS PATTERN IS STANDARD EXAMPLE FOR READING NFC TAGS
   async function readNdef() {
-    try {
-      if (Platform.OS === "android") {
-        androidPromptRef.current.setVisible(true);
-      }
-      await NfcManager.requestTechnology(NfcTech.Ndef);
-      const tag = await NfcManager.getTag();
-      navigation.navigate("Tag", { tag });
-    } catch (ex) {
-      //   bypass
-    } finally {
-      NfcManager.cancelTechnologyRequest();
-      if (Platform.OS === "android") {
-        androidPromptRef.current.setVisible(false);
-      }
-    }
-  }
-
-  function renderNfcButtons() {
-    if (hasNfc === null) {
-      return null;
-    } else if (!hasNfc) {
-      return (
-        <View style={styles.container}>
-          <Text>Your device doesn't support NFC</Text>
-        </View>
-      );
-    } else if (!enabled) {
-      return (
-        <View>
-          <View style={styles.container}>
-            <Text>Your NFC is not enabled!</Text>
-          </View>
-          <Pressable
-            onPress={() => {
-              NfcManager.goToNfcSetting();
-            }}
-          >
-            <Text>GO TO NFC SETTINGS</Text>
-          </Pressable>
-          <Pressable
-            onPress={async () => {
-              setEnabled(await NfcManager.isEnabled());
-            }}
-          >
-            <Text>CHECK AGAIN</Text>
-          </Pressable>
-        </View>
-      );
-    }
-
-    return (
-      <View style={styles.bottom}>
-        <Button
-          mode="contained"
-          style={[styles.btn]}
-          onPress={() => {
-            readNdef();
-          }}
-        >
-          Tap
-        </Button>
-        <Button
-          mode="contained"
-          style={[styles.btn]}
-          onPress={() => {
-            navigation.navigate("WriteNdef");
-          }}
-        >
-          WRITE
-        </Button>
-        <AndroidPrompt
-          ref={androidPromptRef}
-          onCancelPress={() => {
-            NfcManager.cancelTechnologyRequest();
-          }}
-        />
-      </View>
-    );
+    // Navigate to the geo tag list screen instead of scanning directly
+    navigation.navigate("GeoTagList");
   }
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Text style={styles.bannerText}>Find The Tag</Text>
+    <ImageBackground
+      source={require("../../assets/images/topographic_map.jpg")}
+      style={styles.background}
+      imageStyle={styles.backgroundImage}
+    >
+      <View style={styles.container}>
+        <View style={styles.adminToggleContainer}>
+          <Text style={styles.adminLabel}>{isAdmin ? "Admin" : "User"}</Text>
+          <Switch value={isAdmin} onValueChange={toggleAdmin} disabled={adminLoading} />
+        </View>
+        <Text style={styles.bannerText}>Geo Tag</Text>
+        <RenderNfcButtons
+          hasNfc={hasNfc}
+          enabled={enabled}
+          setEnabled={setEnabled}
+          navigation={navigation}
+          readNdef={readNdef}
+        />
       </View>
-      {renderNfcButtons()}
-    </View>
+    </ImageBackground>
   );
 }
 
@@ -137,18 +76,41 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+  },
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  backgroundImage: {
+    resizeMode: "cover",
   },
   bannerText: {
     fontSize: 42,
     textAlign: "center",
   },
-  bottom: {
-    paddingHorizontal: 20,
-    paddingVertical: 40,
+  adminToggleContainer: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  btn: {
-    width: 250,
-    marginBottom: 15,
+  adminLabel: {
+    marginRight: 10,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
   },
 });
 

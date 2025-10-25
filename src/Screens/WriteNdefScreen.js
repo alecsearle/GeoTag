@@ -1,61 +1,49 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import NfcManager, { Ndef, NfcTech } from "react-native-nfc-manager";
-import { Button, Chip, TextInput } from "react-native-paper";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import GeoTagForm from "../Components/Admin/GeoTagForm";
+import WriteGeoTagButton from "../Components/Admin/WriteGeoTagButton";
+import AndroidPrompt from "../Components/AndroidPrompt";
+import { useGeoTagWriter } from "../hooks/useGeoTagWriter";
 
 function WriteNdefScreen(props) {
-  const [selectedLinkType, setSelectedLinkType] = React.useState("WEB");
-  const [value, setValue] = React.useState("");
-
-  async function writeNdef() {
-    let scheme = null;
-    if (selectedLinkType === "WEB") {
-      scheme = "https://";
-    } else if (selectedLinkType === "TEL") {
-      scheme = "tel:";
-    } else if (selectedLinkType === "SMS") {
-      scheme = "sms:";
-    } else if (selectedLinkType === "EMAIL") {
-      scheme = "mailto:";
-    } else {
-      throw new Error("no such type");
-    }
-    const uriRecord = Ndef.uriRecord(`${scheme}${value}`);
-    const bytes = Ndef.encodeMessage([uriRecord]);
-    console.warn(bytes);
-
-    try {
-      await NfcManager.requestTechnology(NfcTech.Ndef);
-      await NfcManager.ndefHandler.writeNdefMessage(bytes);
-    } catch (ex) {
-      // bypass
-    } finally {
-      NfcManager.cancelTechnologyRequest();
-    }
-  }
+  const androidPromptRef = React.useRef();
+  const { geoTagName, setGeoTagName, geoTagHint, setGeoTagHint, isWriting, writeGeoTag } =
+    useGeoTagWriter(props.navigation, androidPromptRef);
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <View style={[styles.wrapper, styles.pad]}>
-        <View style={styles.linkType}>
-          {["WEB", "TEL", "SMS", "EMAIL"].map((linkType) => (
-            <Chip
-              key={linkType}
-              style={styles.chip}
-              selected={linkType === selectedLinkType}
-              onPress={() => setSelectedLinkType(linkType)}
-            >
-              {linkType}
-            </Chip>
-          ))}
-        </View>
-        <TextInput label="TARGET" value={value} onChangeText={setValue} autoCapitalize={false} />
-      </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.wrapper}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView style={styles.wrapper} contentContainerStyle={styles.pad}>
+            <GeoTagForm
+              geoTagName={geoTagName}
+              setGeoTagName={setGeoTagName}
+              geoTagHint={geoTagHint}
+              setGeoTagHint={setGeoTagHint}
+            />
+          </ScrollView>
+        </TouchableWithoutFeedback>
 
-      <View style={[styles.bottom, styles.bgLight]}>
-        <Button onPress={writeNdef}>WRITE</Button>
-      </View>
+        <WriteGeoTagButton onPress={writeGeoTag} isWriting={isWriting} />
+      </KeyboardAvoidingView>
+
+      <AndroidPrompt
+        ref={androidPromptRef}
+        onCancelPress={() => {
+          // Cancel will be handled in the hook
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -66,21 +54,6 @@ const styles = StyleSheet.create({
   },
   pad: {
     padding: 20,
-  },
-  chip: {
-    marginRight: 10,
-    marginBottom: 10,
-  },
-  linkType: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  bottom: {
-    padding: 10,
-    alignItems: "center",
-  },
-  bgLight: {
-    backgroundColor: "lightblue",
   },
 });
 
